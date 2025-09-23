@@ -12,11 +12,13 @@ return new class extends Migration
   public function up()
 {
     Schema::create('students', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('photo')->nullable(); // for file upload
-        $table->timestamps();
-    });
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->string('profile_picture')->nullable();
+    $table->timestamps();
+});
+
 }
 
 

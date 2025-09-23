@@ -9,16 +9,12 @@ class Student extends Model
 {
     use HasFactory;
 
-    // protected $fillable = [
-    //     'name',
-    //     'email',
-    //     'profile_picture',
-    //     'is_verified',
-    //     'verification_token',
-    // ];
-
-
-    protected $fillable = ['name', 'photo']; // photo added for file upload
+    protected $fillable = [
+        'name',
+        'email',
+        'profile_picture',
+    ];
 }
+
 
 

@@ -22,35 +22,39 @@ class StudentController extends Controller
         return view('students.create');
     }
 
+    public function fetch()
+{
+    $students = Student::all();
+    return response()->json([
+        'success' => true,
+        'students' => $students
+    ]);
+}
+
     public function store(Request $request)
-    {
-        $request->validate([
-            'name'  => 'required',
-            'email' => 'required|email|unique:students,email',
-            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+{
+    // Validate input
+    $request->validate([
+        'name'  => 'required|string|max:255',
+        'email' => 'required|email|unique:students,email',
+        'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048'
+    ]);
 
-        $path = null;
-        if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('students', 'public');
-        }
-
-        $student = Student::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'profile_picture' => $path,
-            'is_verified' => false,
-            'verification_token' => Str::random(40),
-        ]);
-
-        // ✅ Logging
-        Log::info('New student added', ['id' => $student->id, 'email' => $student->email]);
-
-        // ✅ Session flash message
-        session()->flash('success', 'Student added successfully!');
-
-        return redirect()->route('students.index');
+    // Handle file upload
+    $path = null;
+    if ($request->hasFile('profile_picture')) {
+        $path = $request->file('profile_picture')->store('students', 'public');
     }
+
+    // Save student
+    Student::create([
+        'name'  => $request->name,
+        'email' => $request->email,   // ✅ include email
+        'profile_picture' => $path,
+    ]);
+
+    return redirect()->back()->with('success', 'Student added successfully!');
+}
 
 
 
